@@ -42,6 +42,9 @@
   
     <h2 th:text="${'Course Creation Homepage'}">Welcome to CourseCreation</h2>
     
+    <form th:action="@{/logout}" method="post">
+      <input type="submit" value="Log out"/> 
+    </form>
     
     <div th:each="course : ${courses}" th:object="${course}">
       <a th:href="${'editCourse/' + {course.id}}"><span th:text="${course.name}"></span></a>
