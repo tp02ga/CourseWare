@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+  <head>
+    <title th:text="${'Course Creation Homepage'}">Welcome to CourseCreation</title>
+    <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet"/>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script th:inline="javascript">
+      $(function () {
+    	  /*<![CDATA[*/
+    	  var courseId = /*[[${course.id}]]*/'1';
+    	  var sectionId = 0;
+    	  $("span[id^='addLesson'").click(function () {
+    		  sectionId = getId($(this).attr("id"));
+    		  console.log("Section ID: " + sectionId);
+    		  $("#create-lesson-dialog").dialog("open");
+    	  });
+    	  
+    	  $("#create-lesson-dialog").dialog({
+	        autoOpen: false,
+	        title: "Create New Lesson",
+	        buttons: {
+	          "Create Lesson": function () {
+	            $.ajax({
+	              url: "createLesson",
+	              type: "post",
+	              dataType: "json",
+	              data: {"courseId": courseId, "sectionId": sectionId, 
+	            	  "lessonNumber": $("#lessonNumber").val(), "lessonTitle": $("#lessonTitle").val()},
+	              success: function (data) {
+	                console.log(data);
+	                $("#create-lesson-dialog").dialog("close");
+	                clearFields();
+	                location.reload();
+	              },
+	              error: function () {
+	                console.log("error");
+	              }
+	            });
+	          },
+	          cancel: function () {
+	            $("#create-lesson-dialog").dialog("close");
+	          }
+	        },
+	        close: function () {
+	          $("#create-lesson-dialog").dialog("close");
+	        }
+	      });
+	 
+    	  $("#create-section-dialog").dialog({
+    		  autoOpen: false,
+    		  title: "Create New Section",
+    		  buttons: {
+    			  "Create Section": function () {
+    				  $.ajax({
+    					  url: "createSection",
+    					  type: "post",
+    					  dataType: "json",
+    					  data: {"courseId": courseId, "sectionName": $("#sectionName").val()},
+    				    success: function (data) {
+    				    	console.log(data);
+    				    	$("#create-section-dialog").dialog("close");
+    				    	clearFields();
+    				    	location.reload();
+    				    },
+    				    error: function () {
+    				    	console.log("error");
+    				    }
+    				  });
+    			  },
+    			  cancel: function () {
+    				  $("#create-section-dialog").dialog("close");
+    			  }
+    		  },
+    		  close: function () {
+    			  $("#create-section-dialog").dialog("close");
+    		  }
+    	  });
+    	  
+    	  $("#createSection").click(function () {
+    		  $("#create-section-dialog").dialog("open");
+    	  });
+      });
+      
+      function getId(aString)
+      {
+    	  return aString.replace( /^\D+/g, '');
+      }
+      
+      function clearFields () {
+    	  $('input:text').val('');
+      }
+      /*]]>*/
+    </script>
+    <style>
+      .linkClass {
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+        font-weight: normal;
+      }
+      .section {
+        font-weight: bold;
+        border: 1px solid;
+        margin-top: 0.5em;
+      }
+      .lesson {
+        font-weight: normal;
+        margin-left: 0.5em;
+      }
+      
+    </style>
+  </head>
+  
+  <body>
+    <h2 th:text="${'Editing Course: ' + {course.name}}"></h2>
+    
+    <div th:each="section : ${course.sections}" th:object="${section}">
+      <div class="section" th:id="${'section'+{section.id}}">
+        <span th:text="*{name}"></span>
+        <div class="lesson" th:each="lesson : ${section.lessons}" th:object="${lesson}">
+          <span th:text="${'Lesson #' + {lesson.number} + ': ' + {lesson.title}}"></span>
+          <br/>
+        </div>
+        <br/><br/>
+        <span class="linkClass" th:id="${'addLesson'+{section.id}}">Add New Lesson</span>
+      </div>
+    </div>
+    <br/>
+    <span id="createSection" class="linkClass">Create New Section</span>
+    
+    <div id="create-section-dialog">
+      <fieldset>
+        Section Name: <input type="text" id="sectionName"/>
+      </fieldset>
+    </div>
+    
+    <div id="create-lesson-dialog">
+      <fieldset>
+        Lesson Number: <input type="number" id="lessonNumber"/><br/>
+        Lesson Title: <input type="text" id="lessonTitle"/>
+      </fieldset>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+  <head>
+    <title th:text="${'Course Creation Homepage'}">Welcome to CourseCreation</title>
+    <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet"/>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+      $(function () {
+    	  $("#create-course-dialog").dialog({
+    		  autoOpen: false,
+    		  title: "Create New Course",
+    		  buttons: {
+    			  "Create Course" : function () {
+    				  $("#frmCreateCourse").submit();
+    			  },
+    			  cancel: function () {
+    				  $("#create-course-dialog").dialog("close");
+    			  }
+    		  },
+    		  close: function () {
+    			  $("#create-course-dialog").dialog("close");
+    		  }
+    	  
+    	  });
+    	  
+    	  $("#createCourse").click(function () {
+    		  $("#create-course-dialog").dialog("open");
+    	  });
+      });
+    </script>
+    <style>
+      .linkClass {
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  
+  <body>
+  
+    <h2 th:text="${'Course Creation Homepage'}">Welcome to CourseCreation</h2>
+    
+    
+    <div th:each="course : ${courses}" th:object="${course}">
+      <a th:href="${'editCourse/' + {course.id}}"><span th:text="${course.name}"></span></a>
+    </div>
+    
+    <div th:if="${#lists.isEmpty(courses)}">
+      There are no courses to display
+    </div>
+    
+    <div style="margin-top: 1em;">
+      <span class="linkClass" id="createCourse">Create a New Course</span>
+    </div>
+    <div id="create-course-dialog">
+      <form id="frmCreateCourse" action="" method="post" th:object="${course}">
+        <fieldset>
+          Course Name: <input type="text" th:field="*{name}"/>
+        </fieldset>
+      </form>
+    </div>
+  </body>
+</html>
