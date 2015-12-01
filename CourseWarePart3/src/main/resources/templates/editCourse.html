@@ -5,6 +5,12 @@
     <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet"/>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+    
     <script th:inline="javascript">
       $(function () {
     	  /*<![CDATA[*/
@@ -14,6 +20,19 @@
     		  sectionId = getId($(this).attr("id"));
     		  console.log("Section ID: " + sectionId);
     		  $("#create-lesson-dialog").dialog("open");
+    	  });
+    	  
+    	  $("#deleteCourse").click(function (e) {
+    	    var result = confirm("Are you sure you wish to delete this course?");
+    	    
+    	    if (result == true)
+  	    	{
+  	    	  $("#frmDeleteCourse").submit();
+    	    }
+    	    else
+  	    	{
+  	    	  e.preventDefault();
+  	    	}
     	  });
     	  
     	  $("#create-lesson-dialog").dialog({
@@ -113,33 +132,60 @@
   </head>
   
   <body>
-    <h2 th:text="${'Editing Course: ' + {course.name}}"></h2>
+    <div class="container">
     
-    <div th:each="section : ${course.sections}" th:object="${section}">
-      <div class="section" th:id="${'section'+{section.id}}">
-        <span th:text="*{name}"></span>
-        <div class="lesson" th:each="lesson : ${section.lessons}" th:object="${lesson}">
-          <span th:text="${'Lesson #' + {lesson.number} + ': ' + {lesson.title}}"></span>
-          <br/>
+      <div class="row">
+        <div class="col-xs-12">
+          <div th:replace="fragments/header :: header"></div>
         </div>
-        <br/><br/>
-        <span class="linkClass" th:id="${'addLesson'+{section.id}}">Add New Lesson</span>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-12">
+          <h2 th:text="${'Editing Course: ' + {course.name}}"></h2>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-12">
+          <form id="frmDeleteCourse" th:action="${{course.id} + '/deleteCourse'}" method="post">
+            <button class="btn btn-danger pull-right" id="deleteCourse">Delete</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-12">
+          <div th:each="section : ${course.sections}" th:object="${section}">
+            <div class="section" th:id="${'section'+{section.id}}">
+              <span th:text="*{name}"></span>
+              <div class="lesson" th:each="lesson : ${section.lessons}" th:object="${lesson}">
+                <span th:text="${'Lesson #' + {lesson.number} + ': ' + {lesson.title}}"></span>
+                <br/>
+              </div>
+              <br/><br/>
+              <span class="linkClass" th:id="${'addLesson'+{section.id}}">Add New Lesson</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br/>
+      <span id="createSection" class="linkClass">Create New Section</span>
+      
+      <div id="create-section-dialog">
+        <fieldset>
+          Section Name: <input type="text" id="sectionName"/>
+        </fieldset>
+      </div>
+      
+      <div id="create-lesson-dialog">
+        <fieldset>
+          Lesson Number: <input type="number" id="lessonNumber"/><br/>
+          Lesson Title: <input type="text" id="lessonTitle"/>
+        </fieldset>
       </div>
     </div>
-    <br/>
-    <span id="createSection" class="linkClass">Create New Section</span>
-    
-    <div id="create-section-dialog">
-      <fieldset>
-        Section Name: <input type="text" id="sectionName"/>
-      </fieldset>
-    </div>
-    
-    <div id="create-lesson-dialog">
-      <fieldset>
-        Lesson Number: <input type="number" id="lessonNumber"/><br/>
-        Lesson Title: <input type="text" id="lessonTitle"/>
-      </fieldset>
-    </div>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </body>
 </html>

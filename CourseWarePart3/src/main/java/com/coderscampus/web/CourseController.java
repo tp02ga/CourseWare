@@ -59,6 +59,15 @@ public class CourseController
     return "editCourse";
   }
 
+  @RequestMapping(value="editCourse/{courseId}/deleteCourse", method=RequestMethod.POST)
+  public String deletCourse (@PathVariable Long courseId)
+  {
+    Course course = courseRepo.findOne(courseId);
+    courseRepo.delete(course);
+    
+    return "redirect:/";
+  }
+  
   @RequestMapping(value="editCourse/createSection", method=RequestMethod.POST)
   public @ResponseBody Course createSection (@RequestParam Long courseId, @RequestParam String sectionName)
   {
