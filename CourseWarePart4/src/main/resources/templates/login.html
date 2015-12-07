@@ -2,6 +2,25 @@
 <html xmlns:th="http://thymeleaf.org">
   <head>
     <title>Please Login to CourseWare</title>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+    
+    <script type="text/javascript">
+      $(function () {
+    	$("#register").click(function (e) {
+    	  e.preventDefault();
+          window.location.href = "/register";
+    	});
+      });
+      
+    </script>
+    
     <style type="text/css">
       .error {
         color: red;
@@ -9,40 +28,53 @@
     </style>
   </head>
   <body>
-    <h1>Login to CourseWare</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h1>Login to CourseWare</h1>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-12">
+          <form th:action="@{/login}" method="post">
+            <fieldset>
+              <legend>Please Login</legend>
+              <!-- use param.error assuming FormLoginConfigurer#failureUrl contains the query parameter error -->
+              <div th:if="${param.error != null}">
+                  <div class="error">
+                      Failed to login.
+                      <div th:if="${SPRING_SECURITY_LAST_EXCEPTION != null}">
+                        Reason: <span th:text="${SPRING_SECURITY_LAST_EXCEPTION.message}"></span>
+                      </div>
+                  </div>
+              </div>
+              <!-- the configured LogoutConfigurer#logoutSuccessUrl is /login?logout and contains the query param logout -->
+              <div th:if="${param.logout != null}">
+                  <div class="error">
+                      You have been logged out.
+                  </div>
+              </div>
+              <p>
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username"/>
+              </p>
+              <p>
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password"/>
+              </p>
+              
+              <div>
+                  <button class="btn btn-primary">Log in</button>
+                  <button id="register" class="btn btn-default">Register</button>
+              </div>
+          </fieldset>
+          </form>
+        </div>
+      </div>
     
-    <form th:action="@{/login}" method="post">
-      <fieldset>
-        <legend>Please Login</legend>
-        <!-- use param.error assuming FormLoginConfigurer#failureUrl contains the query parameter error -->
-        <div th:if="${param.error != null}">
-            <div class="error">
-                Failed to login.
-                <div th:if="${SPRING_SECURITY_LAST_EXCEPTION != null}">
-                  Reason: <span th:text="${SPRING_SECURITY_LAST_EXCEPTION.message}"></span>
-                </div>
-            </div>
-        </div>
-        <!-- the configured LogoutConfigurer#logoutSuccessUrl is /login?logout and contains the query param logout -->
-        <div th:if="${param.logout != null}">
-            <div class="error">
-                You have been logged out.
-            </div>
-        </div>
-        <p>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username"/>
-        </p>
-        <p>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password"/>
-        </p>
-        
-        <div>
-            <button type="submit" class="btn">Log in</button>
-        </div>
-    </fieldset>
-
-    </form>
+    </div>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </body>
 </html>

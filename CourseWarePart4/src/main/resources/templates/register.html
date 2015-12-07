@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://thymeleaf.org">
+  <head>
+    <title>Please Register</title>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    
+    <script type="text/javascript">
+      $(function () {
+        $("#createAccount").click(function (e) {
+          var pwd = $("#password").val();
+          var confirmPwd = $("#confirmPassword").val();
+          
+          if (pwd == confirmPwd)
+          {
+        	$("#frmCreateAccount").submit();
+          }
+          else
+          {
+        	alert("Error: The passwords do not match");
+        	$("#password").val("");
+        	$("#confirmPassword").val("");
+        	$("#password").focus();
+        	e.preventDefault();
+          }
+        });
+      });
+    </script>
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <form class="form-horizontal" id="frmCreateAccount" th:action="@{/register}" method="post" th:object="${user}">
+            <fieldset>
+              <legend>Please Enter You Registration Info</legend>
+              <div class="error" th:text="${errorMsg}"></div>
+              <div class="form-group">
+                <label class="col-xs-12 col-sm-3 control-label" for="emailAddress">Email Address:</label>
+                <div class="col-xs-12 col-sm-9">
+                  <input class="form-control" type="email" id="emailAddress" th:field="*{email}" placeholder="example@email.com" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-3" for="password">Password:</label>
+                <div class="col-xs-12 col-sm-9">
+                  <input class="form-control" type="password" id="password" th:field="*{password}" placeholder="enter your password" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword" class="col-xs-12 col-sm-3 control-label">Confirm Password:</label>
+                <div class="col-xs-12 col-sm-9">
+                  <input class="form-control" type="password" id="confirmPassword" placeholder="confirm your password" />
+                </div>
+              </div>
+            </fieldset>
+            <div class="form-group">
+              <div class="col-xs-12 col-sm-offset-3 col-sm-12">
+                <button class="btn btn-primary" id="createAccount">Create Account</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>  
+  </body>
+</html>
