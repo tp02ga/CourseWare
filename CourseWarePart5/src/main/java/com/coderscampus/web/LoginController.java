@@ -1,6 +1,8 @@
 package com.coderscampus.web;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,6 +38,8 @@ public class LoginController
     User userByEmail = userRepo.findUserByEmail(user.getEmail());
     if (userByEmail == null)
     {
+      BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+      user.setPassword(encoder.encode(user.getPassword()));
       userRepo.save(user);
       return "redirect:/login";
     }
@@ -53,5 +57,12 @@ public class LoginController
     this.userRepo = userRepo;
   }
   
+  @Test
+  public void encoding_test()
+  {
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    String pwd = "user";
+    System.out.println(encoder.encode(pwd));
+  }
   
 }

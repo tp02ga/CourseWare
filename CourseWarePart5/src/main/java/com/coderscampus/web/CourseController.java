@@ -1,8 +1,9 @@
 package com.coderscampus.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,14 +16,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.coderscampus.domain.Course;
 import com.coderscampus.domain.Lesson;
 import com.coderscampus.domain.Section;
+import com.coderscampus.domain.User;
 import com.coderscampus.repository.CourseRepository;
 import com.coderscampus.repository.SectionRepository;
+import com.coderscampus.repository.UserRepository;
 
 @Controller
 public class CourseController
 {
   private CourseRepository courseRepo;
   private SectionRepository sectionRepo;
+  private UserRepository userRepo;
   
   @RequestMapping("/")
   public String rootPath ()
@@ -34,7 +38,7 @@ public class CourseController
   public String courses (ModelMap model)
   {
     
-    Page<Course> courses = courseRepo.findAll(new PageRequest(0, 3));
+    List<Course> courses = courseRepo.findAll();
     model.put("courses", courses);
     Course course = new Course();
     model.put("course", course);
@@ -43,9 +47,14 @@ public class CourseController
   }
   
   @RequestMapping(value="courses", method=RequestMethod.POST)
-  public String coursesPost (@ModelAttribute Course course, ModelMap model)
+  public String coursesPost (@ModelAttribute Course course, ModelMap model, @AuthenticationPrincipal User user)
   {
+    course.setUser(user);
+    user.getCourses().add(course);
+    
     Course savedCourse = courseRepo.save(course);
+    
+    
     return "redirect:/editCourse/" + savedCourse.getId();
   }
   
@@ -60,9 +69,13 @@ public class CourseController
   }
 
   @RequestMapping(value="editCourse/{courseId}/deleteCourse", method=RequestMethod.POST)
-  public String deletCourse (@PathVariable Long courseId)
+  public String deletCourse (@PathVariable Long courseId, @AuthenticationPrincipal User user)
   {
     Course course = courseRepo.findOne(courseId);
+    User savedUser = userRepo.findUserByEmail(user.getEmail());
+    
+    savedUser.getCourses().remove(course);
+    
     courseRepo.delete(course);
     
     return "redirect:/";
@@ -112,6 +125,11 @@ public class CourseController
   public void setSectionRepo(SectionRepository sectionRepo)
   {
     this.sectionRepo = sectionRepo;
+  }
+  @Autowired
+  public void setUserRepo(UserRepository userRepo)
+  {
+    this.userRepo = userRepo;
   }
   
 }

@@ -21,6 +21,7 @@ public class User
   private String email;
   private String password;
   private Set<Authorities> authorities = new HashSet<>();
+  private Set<Course> courses = new HashSet<>();
   
   public User ()
   {
@@ -29,8 +30,11 @@ public class User
   
   public User(User user)
   {
+    this.id = user.getId();
     this.email = user.getEmail();
     this.password = user.getPassword();
+    this.authorities = user.getAuthorities();
+    this.courses = user.getCourses();
   }
   
   @Id
@@ -44,6 +48,17 @@ public class User
     this.id = id;
   }
   
+  @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="user", orphanRemoval=true)
+  public Set<Course> getCourses()
+  {
+    return courses;
+  }
+
+  public void setCourses(Set<Course> courses)
+  {
+    this.courses = courses;
+  }
+
   public String getEmail()
   {
     return email;
